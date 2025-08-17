@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_test_fiap/app/features/home/controller/home_cubit.dart';
@@ -58,13 +59,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> callApi() async {
+    final dio = Dio();
+
+    final result = await dio.get('https://api.escuelajs.co/api/v1/products');
+    print('Status: ${result.statusCode}');
+    print('Data: ${result.data.toString()}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const UseDevAppBar(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _navigateToCreateProduct(context, null),
+        onPressed: () => callApi(),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
