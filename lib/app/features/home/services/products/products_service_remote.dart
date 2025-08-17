@@ -17,19 +17,12 @@ class ProductsServiceRemote implements ProductsService {
   @override
   Future<({ProductModel? product, Response result})> createProduct(
       ProductModel product) async {
-    final result = await ApiClient.client.post(
+    await ApiClient.client.post(
       '/api/v1/products',
       data: product.toJson(),
     );
 
-    if (result.statusCode == 201) {
-      return (product: product, result: const Success());
-    }
-
-    return (
-      product: null,
-      result: const GeneralFailure(message: 'Erro idefinido'),
-    );
+    return (product: product, result: const Success());
   }
 
   @override
@@ -46,8 +39,14 @@ class ProductsServiceRemote implements ProductsService {
 
   @override
   Future<({ProductModel? product, Response result})> updateProduct(
-      int id, ProductModel product) {
-    // TODO: implement updateProduct
-    throw UnimplementedError();
+    int id,
+    ProductModel product,
+  ) async {
+    await ApiClient.client.put(
+      '/api/v1/products/$id',
+      data: product.toJson(),
+    );
+
+    return (product: product, result: const Success());
   }
 }
