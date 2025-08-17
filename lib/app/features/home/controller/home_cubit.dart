@@ -34,8 +34,10 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> createProduct(ProductModel product,
-      {List<File>? imageFiles}) async {
+  Future<void> createProduct(
+    ProductModel product, {
+    List<File>? imageFiles,
+  }) async {
     if (isClosed) return;
     emit(HomeLoading());
 

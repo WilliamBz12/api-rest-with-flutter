@@ -4,19 +4,15 @@ import 'package:app_test_fiap/app/features/home/services/products/products_servi
 import 'package:dio/dio.dart' hide Response;
 
 class ProductsServiceRemote implements ProductsService {
-  Future<void> callApi() async {
+  Dio get client {
     final dio = Dio();
-
-    final result = await dio.get('https://api.escuelajs.co/api/v1/products');
-    print('Status: ${result.statusCode}');
-    print('Data: ${result.data.toString()}');
+    dio.options.baseUrl = 'https://api.escuelajs.co';
+    return dio;
   }
 
   @override
   Future<({List<ProductModel> products, Response result})> getProducts() async {
-    final dio = Dio();
-    final result = await dio.get('https://api.escuelajs.co/api/v1/products');
-
+    final result = await client.get('/api/v1/products');
     final data = result.data as List;
     final products = data.map((e) => ProductModel.fromJson(e)).toList();
 
@@ -25,9 +21,20 @@ class ProductsServiceRemote implements ProductsService {
 
   @override
   Future<({ProductModel? product, Response result})> createProduct(
-      ProductModel product) {
-    // TODO: implement createProduct
-    throw UnimplementedError();
+      ProductModel product) async {
+    final result = await client.post(
+      '/api/v1/products',
+      data: product.toJson(),
+    );
+
+    if (result.statusCode == 201) {
+      return (product: product, result: const Success());
+    }
+
+    return (
+      product: null,
+      result: const GeneralFailure(message: 'Erro idefinido'),
+    );
   }
 
   @override
