@@ -1,18 +1,13 @@
+import 'package:app_test_fiap/app/core/client/api_client.dart';
 import 'package:app_test_fiap/app/core/network/response_types/response.dart';
 import 'package:app_test_fiap/app/features/home/model/product_model.dart';
 import 'package:app_test_fiap/app/features/home/services/products/products_service.dart';
 import 'package:dio/dio.dart' hide Response;
 
 class ProductsServiceRemote implements ProductsService {
-  Dio get client {
-    final dio = Dio();
-    dio.options.baseUrl = 'https://api.escuelajs.co';
-    return dio;
-  }
-
   @override
   Future<({List<ProductModel> products, Response result})> getProducts() async {
-    final result = await client.get('/api/v1/products');
+    final result = await ApiClient.client.get('/api/v1/products');
     final data = result.data as List;
     final products = data.map((e) => ProductModel.fromJson(e)).toList();
 
@@ -22,7 +17,7 @@ class ProductsServiceRemote implements ProductsService {
   @override
   Future<({ProductModel? product, Response result})> createProduct(
       ProductModel product) async {
-    final result = await client.post(
+    final result = await ApiClient.client.post(
       '/api/v1/products',
       data: product.toJson(),
     );

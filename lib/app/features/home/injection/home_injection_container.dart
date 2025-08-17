@@ -5,6 +5,7 @@ import 'package:app_test_fiap/app/features/home/services/products/products_servi
 import 'package:app_test_fiap/app/features/home/services/products/products_service_remote.dart';
 import 'package:app_test_fiap/app/features/home/services/upload/upload_service.dart';
 import 'package:app_test_fiap/app/features/home/services/upload/upload_service_mock.dart';
+import 'package:app_test_fiap/app/features/home/services/upload/upload_service_remote.dart';
 
 class HomeInjectionContainer {
   void call(InjectionAdapter dependency) {
@@ -13,7 +14,7 @@ class HomeInjectionContainer {
     );
 
     dependency.registerFactory<UploadService>(
-      UploadServiceMock(),
+      UploadServiceRemote(),
     );
 
     dependency.registerLazySingleton<HomeCubit>(
