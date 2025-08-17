@@ -32,9 +32,10 @@ class ProductsServiceRemote implements ProductsService {
   }
 
   @override
-  Future<({ProductModel? product, Response result})> getProduct(int id) {
-    // TODO: implement getProduct
-    throw UnimplementedError();
+  Future<({ProductModel? product, Response result})> getProduct(int id) async {
+    final result = await ApiClient.client.get('/api/v1/products/$id');
+    final product = ProductModel.fromJson(result.data);
+    return (product: product, result: const Success());
   }
 
   @override

@@ -34,10 +34,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     if (isEditing) {
-      _titleController.text = widget.product!.title ?? '';
-      _priceController.text = widget.product!.price?.toString() ?? '';
-      _descriptionController.text = widget.product!.description ?? '';
-      _existingImageUrls = widget.product!.images ?? [];
+      final cubit = context.read<HomeCubit>();
+      cubit.getProduct(widget.product!.id!);
     }
   }
 
@@ -107,6 +105,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
       ),
       body: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
+          if (state is HomeProductLoaded) {
+            _titleController.text = state.product.title ?? '';
+            _priceController.text = state.product.price?.toString() ?? '';
+            _descriptionController.text = state.product.description ?? '';
+            _existingImageUrls = state.product.images ?? [];
+          }
+
           if (state is HomeProductCreated) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Produto criado com sucesso!')),
