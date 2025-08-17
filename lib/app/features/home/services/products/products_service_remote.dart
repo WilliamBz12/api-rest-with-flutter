@@ -1,14 +1,18 @@
-import 'package:app_test_fiap/app/core/client/api_client.dart';
+import 'package:app_test_fiap/app/core/api/api_adapter.dart' hide Response;
 import 'package:app_test_fiap/app/core/network/response_types/response.dart';
 import 'package:app_test_fiap/app/features/home/model/product_model.dart';
 import 'package:app_test_fiap/app/features/home/services/products/products_service.dart';
 import 'package:dio/dio.dart' hide Response;
 
 class ProductsServiceRemote implements ProductsService {
+  final ApiClientAdapter client;
+
+  ProductsServiceRemote({required this.client});
+
   @override
   Future<({List<ProductModel> products, Response result})> getProducts() async {
     try {
-      final result = await ApiClient.client.get('/api/v1/products');
+      final result = await client.get(path: '/api/v1/products');
       final data = result.data as List;
       final products = data.map((e) => ProductModel.fromJson(e)).toList();
 
@@ -36,8 +40,8 @@ class ProductsServiceRemote implements ProductsService {
     ProductModel product,
   ) async {
     try {
-      await ApiClient.client.post(
-        '/api/v1/products',
+      await client.post(
+        path: '/api/v1/products',
         data: product.toJson(),
       );
       return (product: product, result: const Success());
@@ -62,7 +66,7 @@ class ProductsServiceRemote implements ProductsService {
   @override
   Future<({Response result, bool success})> deleteProduct(int id) async {
     try {
-      await ApiClient.client.delete('/api/v1/products/$id');
+      await client.delete(path: '/api/v1/products/$id');
       return (result: const Success(), success: true);
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
@@ -85,7 +89,7 @@ class ProductsServiceRemote implements ProductsService {
   @override
   Future<({ProductModel? product, Response result})> getProduct(int id) async {
     try {
-      final result = await ApiClient.client.get('/api/v1/products/$id');
+      final result = await client.get(path: '/api/v1/products/$id');
       final product = ProductModel.fromJson(result.data);
       return (product: product, result: const Success());
     } on DioException catch (e) {
@@ -112,8 +116,8 @@ class ProductsServiceRemote implements ProductsService {
     ProductModel product,
   ) async {
     try {
-      await ApiClient.client.put(
-        '/api/v1/products/$id',
+      await client.put(
+        path: '/api/v1/products/$id',
         data: product.toJson(),
       );
 
