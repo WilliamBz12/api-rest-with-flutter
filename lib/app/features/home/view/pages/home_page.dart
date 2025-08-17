@@ -59,21 +59,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> callApi() async {
-    final dio = Dio();
-
-    final result = await dio.get('https://api.escuelajs.co/api/v1/products');
-    print('Status: ${result.statusCode}');
-    print('Data: ${result.data.toString()}');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const UseDevAppBar(),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => callApi(),
+        onPressed: () => _navigateToCreateProduct(
+          context,
+          context.read<HomeCubit>(),
+        ),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
