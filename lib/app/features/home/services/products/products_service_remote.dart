@@ -7,35 +7,103 @@ import 'package:dio/dio.dart' hide Response;
 class ProductsServiceRemote implements ProductsService {
   @override
   Future<({List<ProductModel> products, Response result})> getProducts() async {
-    final result = await ApiClient.client.get('/api/v1/products');
-    final data = result.data as List;
-    final products = data.map((e) => ProductModel.fromJson(e)).toList();
+    try {
+      final result = await ApiClient.client.get('/api/v1/products');
+      final data = result.data as List;
+      final products = data.map((e) => ProductModel.fromJson(e)).toList();
 
-    return (products: products, result: const Success());
+      return (products: products, result: const Success());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return (
+          products: <ProductModel>[],
+          result: const GeneralFailure(message: 'Erro nos dados enviados')
+        );
+      } else if (e.response?.statusCode == 404) {
+        return (
+          products: <ProductModel>[],
+          result: const GeneralFailure(message: 'Produtos não encontrados')
+        );
+      }
+      return (products: <ProductModel>[], result: const GeneralFailure());
+    } catch (e) {
+      return (products: <ProductModel>[], result: const GeneralFailure());
+    }
   }
 
   @override
   Future<({ProductModel? product, Response result})> createProduct(
-      ProductModel product) async {
-    await ApiClient.client.post(
-      '/api/v1/products',
-      data: product.toJson(),
-    );
-
-    return (product: product, result: const Success());
+    ProductModel product,
+  ) async {
+    try {
+      await ApiClient.client.post(
+        '/api/v1/products',
+        data: product.toJson(),
+      );
+      return (product: product, result: const Success());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Erro nos dados enviados')
+        );
+      } else if (e.response?.statusCode == 404) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Produto não encontrado')
+        );
+      }
+      return (product: null, result: const GeneralFailure());
+    } catch (e) {
+      return (product: null, result: const GeneralFailure());
+    }
   }
 
   @override
   Future<({Response result, bool success})> deleteProduct(int id) async {
-    await ApiClient.client.delete('/api/v1/products/$id');
-    return (result: const Success(), success: true);
+    try {
+      await ApiClient.client.delete('/api/v1/products/$id');
+      return (result: const Success(), success: true);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return (
+          success: false,
+          result: const GeneralFailure(message: 'Erro nos dados enviados')
+        );
+      } else if (e.response?.statusCode == 404) {
+        return (
+          success: false,
+          result: const GeneralFailure(message: 'Produto não encontrado')
+        );
+      }
+      return (success: false, result: const GeneralFailure());
+    } catch (e) {
+      return (success: false, result: const GeneralFailure());
+    }
   }
 
   @override
   Future<({ProductModel? product, Response result})> getProduct(int id) async {
-    final result = await ApiClient.client.get('/api/v1/products/$id');
-    final product = ProductModel.fromJson(result.data);
-    return (product: product, result: const Success());
+    try {
+      final result = await ApiClient.client.get('/api/v1/products/$id');
+      final product = ProductModel.fromJson(result.data);
+      return (product: product, result: const Success());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Erro na chamada')
+        );
+      } else if (e.response?.statusCode == 404) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Produto não encontrado')
+        );
+      }
+      return (product: null, result: const GeneralFailure());
+    } catch (e) {
+      return (product: null, result: const GeneralFailure());
+    }
   }
 
   @override
@@ -43,11 +111,28 @@ class ProductsServiceRemote implements ProductsService {
     int id,
     ProductModel product,
   ) async {
-    await ApiClient.client.put(
-      '/api/v1/products/$id',
-      data: product.toJson(),
-    );
+    try {
+      await ApiClient.client.put(
+        '/api/v1/products/$id',
+        data: product.toJson(),
+      );
 
-    return (product: product, result: const Success());
+      return (product: product, result: const Success());
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Erro nos dados enviados')
+        );
+      } else if (e.response?.statusCode == 404) {
+        return (
+          product: null,
+          result: const GeneralFailure(message: 'Produto não encontrado')
+        );
+      }
+      return (product: null, result: const GeneralFailure());
+    } catch (e) {
+      return (product: null, result: const GeneralFailure());
+    }
   }
 }

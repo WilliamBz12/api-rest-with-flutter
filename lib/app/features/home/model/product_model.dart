@@ -37,7 +37,7 @@ class ProductModel {
       'title': title,
       'price': price,
       'description': description,
-      'categoryId': 21,
+      'categoryId': 1,
       'images': images,
     };
   }
