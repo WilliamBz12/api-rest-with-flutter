@@ -33,9 +33,9 @@ class ProductsServiceRemote implements ProductsService {
   }
 
   @override
-  Future<({Response result, bool success})> deleteProduct(int id) {
-    // TODO: implement deleteProduct
-    throw UnimplementedError();
+  Future<({Response result, bool success})> deleteProduct(int id) async {
+    await ApiClient.client.delete('/api/v1/products/$id');
+    return (result: const Success(), success: true);
   }
 
   @override
